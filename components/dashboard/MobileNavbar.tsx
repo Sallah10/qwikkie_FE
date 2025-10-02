@@ -15,22 +15,21 @@ import {
   Award,
   Menu,
   X,
-  Search,
-  Bell,
-  User,
+  // Search,
+  // Bell,
+  // User,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import // DropdownMenu,
+// DropdownMenuContent,
+// DropdownMenuItem,
+// DropdownMenuLabel,
+// DropdownMenuSeparator,
+// DropdownMenuTrigger,
+"@/components/ui/dropdown-menu";
 
 const menuItems = [
   { name: "Overview", href: "/dashboard", icon: Home },
@@ -128,7 +127,7 @@ export default function MobileNavbar() {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex items-center gap-1">
+            {/* <div className="flex items-center gap-1">
               <Button
                 variant="ghost"
                 size="icon"
@@ -154,7 +153,7 @@ export default function MobileNavbar() {
                   <DropdownMenuItem>Logout</DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-            </div>
+            </div> */}
           </>
         )}
       </div>
