@@ -1,4 +1,3 @@
-// src/app/dashboard/analytics/page.tsx
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import {
   PointsDistributionChart,

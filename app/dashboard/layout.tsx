@@ -1,4 +1,3 @@
-// src/app/dashboard/layout.tsx
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import MobileNavbar from "@/components/dashboard/MobileNavbar";
 

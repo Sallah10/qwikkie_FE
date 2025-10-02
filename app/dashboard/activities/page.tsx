@@ -1,4 +1,3 @@
-// src/app/dashboard/activities/page.tsx
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import RecentActivity from "@/components/dashboard/RecentActivity";
 

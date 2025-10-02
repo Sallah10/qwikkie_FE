@@ -1,16 +1,15 @@
-// Example for src/app/dashboard/page.tsx
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 import StatsOverview from "@/components/dashboard/StatsOverview";
 import Leaderboard from "@/components/dashboard/Leaderboard";
 import RecentActivity from "@/components/dashboard/RecentActivity";
-import RewardsProgress from "@/components/dashboard/RewardsProgress";
+// import RewardsProgress from "@/components/dashboard/RewardsProgress";
 import MemberManagement from "@/components/dashboard/MemberManagement";
-import {
-  PointsDistributionChart,
-  SocialMediaChart,
-  WeeklyProgressChart,
-  LevelDistributionChart,
-} from "@/components/dashboard/Charts";
+// import {
+//   PointsDistributionChart,
+//   SocialMediaChart,
+//   WeeklyProgressChart,
+//   LevelDistributionChart,
+// } from "@/components/dashboard/Charts";
 
 export default function DashboardPage() {
   return (
@@ -29,7 +28,7 @@ export default function DashboardPage() {
         <Leaderboard />
         <RecentActivity />
       </div>
-
+      {/* 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <PointsDistributionChart />
         <LevelDistributionChart />
@@ -41,9 +40,9 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 gap-6">
         <SocialMediaChart />
-      </div>
+      </div> */}
 
-      <RewardsProgress />
+      {/* <RewardsProgress /> */}
 
       <MemberManagement />
     </div>

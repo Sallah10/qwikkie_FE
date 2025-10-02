@@ -1,65 +1,87 @@
 "use client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Users, Trophy, TrendingUp, Target } from "lucide-react";
+import { Users, Target, TrendingUp, Award } from "lucide-react";
 import { useEffect, useState } from "react";
-// Mock data - to be replaced with API calls
+
 interface StatsData {
   totalMembers: number;
-  activeThisWeek: number;
-  totalPoints: number;
-  levelTargets: {
-    q1: number;
-    q2: number;
-    q3: number;
-    q4: number;
-    q5: number;
-    q6: number;
-    q7: number;
-  };
+  q1Users: number;
+  q2Users: number;
+  q3Users: number;
 }
 
-const statsData = {
+// Fallback data
+const fallbackData: StatsData = {
   totalMembers: 1248,
-  activeThisWeek: 342,
-  totalPoints: 45876,
-  levelTargets: {
-    q1: 1248,
-    q2: 342,
-    q3: 87,
-    q4: 42,
-    q5: 18,
-    q6: 8,
-    q7: 3,
-  },
+  q1Users: 342,
+  q2Users: 87,
+  q3Users: 42,
 };
 
 export default function StatsOverview() {
-  const [, setStats] = useState<StatsData | null>(null);
+  const [stats, setStats] = useState<StatsData | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await fetch("/api/mock/stats");
-        const data = await response.json();
-        setStats(data);
+        // Fetch data from all endpoints in parallel
+        const [totalUsersRes, q1Res, q2Res, q3Res] = await Promise.allSettled([
+          fetch("http://127.0.0.1:8000/qw/stats/total-users/"),
+          fetch("http://127.0.0.1:8000/qw/stats/total_q1/"),
+          fetch("http://127.0.0.1:8000/qw/stats/total_q2/"),
+          fetch("http://127.0.0.1:8000/qw/stats/total_q3/"),
+        ]);
+
+        // Extract data from responses with fallback values
+        const totalMembers =
+          totalUsersRes.status === "fulfilled" && totalUsersRes.value.ok
+            ? await totalUsersRes.value
+                .json()
+                .then(
+                  (data) =>
+                    data.count || data.total || fallbackData.totalMembers
+                )
+            : fallbackData.totalMembers;
+
+        const q1Users =
+          q1Res.status === "fulfilled" && q1Res.value.ok
+            ? await q1Res.value
+                .json()
+                .then(
+                  (data) => data.count || data.total || fallbackData.q1Users
+                )
+            : fallbackData.q1Users;
+
+        const q2Users =
+          q2Res.status === "fulfilled" && q2Res.value.ok
+            ? await q2Res.value
+                .json()
+                .then(
+                  (data) => data.count || data.total || fallbackData.q2Users
+                )
+            : fallbackData.q2Users;
+
+        const q3Users =
+          q3Res.status === "fulfilled" && q3Res.value.ok
+            ? await q3Res.value
+                .json()
+                .then(
+                  (data) => data.count || data.total || fallbackData.q3Users
+                )
+            : fallbackData.q3Users;
+
+        // Update stats with new data
+        setStats({
+          totalMembers,
+          q1Users,
+          q2Users,
+          q3Users,
+        });
       } catch (error) {
         console.error("Failed to fetch stats:", error);
-        // Fallback data
-        setStats({
-          totalMembers: 1248,
-          activeThisWeek: 342,
-          totalPoints: 45876,
-          levelTargets: {
-            q1: 1248,
-            q2: 342,
-            q3: 87,
-            q4: 42,
-            q5: 18,
-            q6: 8,
-            q7: 3,
-          },
-        });
+        // Use fallback data if any error occurs
+        setStats(fallbackData);
       } finally {
         setLoading(false);
       }
@@ -67,6 +89,9 @@ export default function StatsOverview() {
 
     fetchStats();
   }, []);
+
+  // Use fallback data while loading or if stats is null
+  const displayStats = stats || fallbackData;
 
   if (loading) {
     return (
@@ -86,58 +111,76 @@ export default function StatsOverview() {
       </div>
     );
   }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Total Members Card */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Total Members</CardTitle>
           <Users className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{statsData.totalMembers}</div>
-          <p className="text-xs text-muted-foreground">+12% from last week</p>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">
-            Active This Week
-          </CardTitle>
-          <TrendingUp className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
-          <div className="text-2xl font-bold">{statsData.activeThisWeek}</div>
-          <p className="text-xs text-muted-foreground">+8% from last week</p>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Total Points</CardTitle>
-          <Trophy className="h-4 w-4 text-muted-foreground" />
-        </CardHeader>
-        <CardContent>
           <div className="text-2xl font-bold">
-            {statsData.totalPoints.toLocaleString()}
+            {displayStats.totalMembers.toLocaleString()}
           </div>
-          <p className="text-xs text-muted-foreground">+1,240 today</p>
+          <p className="text-xs text-muted-foreground">All registered users</p>
         </CardContent>
       </Card>
 
+      {/* Q1 Users Card */}
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">
-            Q7 Target Progress
-          </CardTitle>
+          <CardTitle className="text-sm font-medium">Q1 Users</CardTitle>
           <Target className="h-4 w-4 text-muted-foreground" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            {statsData.levelTargets.q7}/5
+            {displayStats.q1Users.toLocaleString()}
           </div>
           <p className="text-xs text-muted-foreground">
-            {Math.round((statsData.levelTargets.q7 / 5) * 100)}% of target
+            {Math.round(
+              (displayStats.q1Users / displayStats.totalMembers) * 100
+            )}
+            % of total
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Q2 Users Card */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Q2 Users</CardTitle>
+          <TrendingUp className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">
+            {displayStats.q2Users.toLocaleString()}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {Math.round(
+              (displayStats.q2Users / displayStats.totalMembers) * 100
+            )}
+            % of total
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Q3 Users Card */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium">Q3 Users</CardTitle>
+          <Award className="h-4 w-4 text-muted-foreground" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold">
+            {displayStats.q3Users.toLocaleString()}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            {Math.round(
+              (displayStats.q3Users / displayStats.totalMembers) * 100
+            )}
+            % of total
           </p>
         </CardContent>
       </Card>

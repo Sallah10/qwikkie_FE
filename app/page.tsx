@@ -1,4 +1,3 @@
-// src/app/page.tsx
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Award, Users, BarChart3, Rocket } from "lucide-react";

@@ -9,7 +9,7 @@ export default function MembersPage() {
         title="Member Management"
         description="View and manage all QWIKKIE members"
       />
-      <MemberManagement />
+      <MemberManagement isStandalone={true} />
     </div>
   );
 }

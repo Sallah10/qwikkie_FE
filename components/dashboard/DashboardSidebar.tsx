@@ -8,10 +8,10 @@ import {
   Users,
   Trophy,
   Activity,
-  BarChart3,
-  Settings,
+  // BarChart3,
+  // Settings,
+  // Calendar,
   Award,
-  Calendar,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -21,9 +21,9 @@ const menuItems = [
   { name: "Leaderboard", href: "/dashboard/leaderboard", icon: Trophy },
   { name: "Activities", href: "/dashboard/activities", icon: Activity },
   { name: "Rewards", href: "/dashboard/rewards", icon: Award },
-  { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
-  { name: "Schedule", href: "/dashboard/schedule", icon: Calendar },
-  { name: "Settings", href: "/dashboard/settings", icon: Settings },
+  // { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
+  // { name: "Schedule", href: "/dashboard/schedule", icon: Calendar },
+  // { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
 export default function DashboardSidebar() {
