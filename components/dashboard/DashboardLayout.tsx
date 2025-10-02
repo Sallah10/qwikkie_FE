@@ -1,56 +1,38 @@
-// components/dashboard/DashboardLayout.tsx
+/* eslint-disable prefer-const */
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
-  const [lastRefresh, setLastRefresh] = useState<Date>(new Date());
-  const [isRefreshing, setIsRefreshing] = useState(false);
-
-  // This function will be called to refresh ALL data
-  const refreshAllData = useCallback(async () => {
-    if (isRefreshing) return;
-
-    console.log("🔄 Auto-refreshing all dashboard data...");
-    setIsRefreshing(true);
-
-    try {
-      // Dispatch a custom event that all components can listen to
-      window.dispatchEvent(new CustomEvent("dashboardRefresh"));
-      setLastRefresh(new Date());
-    } catch (error) {
-      console.error("Auto-refresh failed:", error);
-    } finally {
-      setIsRefreshing(false);
-    }
-  }, [isRefreshing]);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   useEffect(() => {
     let refreshInterval: NodeJS.Timeout;
     let inactivityTimer: NodeJS.Timeout;
 
+    const triggerRefresh = () => {
+      console.log("🔄 Triggering dashboard refresh...");
+      setRefreshTrigger((prev) => prev + 1); // This will re-render ALL children
+    };
+
     const resetInactivityTimer = () => {
       clearTimeout(inactivityTimer);
       inactivityTimer = setTimeout(() => {
-        clearInterval(refreshInterval); // Stop refresh when inactive
+        clearInterval(refreshInterval);
         console.log("⏸️ Auto-refresh paused due to inactivity");
       }, 2 * 60 * 1000); // 2 minutes inactivity
     };
 
-    const setupRefresh = () => {
-      refreshInterval = setInterval(refreshAllData, 5 * 60 * 1000); // 5 minutes
-    };
-
-    // Start everything
-    setupRefresh();
+    // Refreshes every 5 minutes
+    refreshInterval = setInterval(triggerRefresh, 5 * 60 * 1000);
     resetInactivityTimer();
 
     // Listen for user activity
-    const events = ["mousemove", "keypress", "click", "scroll", "touchstart"];
+    const events = ["mousemove", "keypress", "click", "scroll"];
     events.forEach((event) => {
       document.addEventListener(event, resetInactivityTimer);
     });
@@ -62,22 +44,18 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         document.removeEventListener(event, resetInactivityTimer);
       });
     };
-  }, [refreshAllData]);
+  }, []);
 
   return (
     <div className="p-6 space-y-6">
-      {/* Refresh Indicator */}
       <div className="flex justify-between items-center">
-        <h1 className="text-2xl font-bold">Bot Moderator Dashboard</h1>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-          {isRefreshing && (
-            <span className="animate-pulse">🔄 Refreshing...</span>
-          )}
-          <span>Last update: {lastRefresh.toLocaleTimeString()}</span>
+        <h1 className="text-2xl font-bold">QWIKKIE Rewards Dashboard</h1>
+        <div className="text-sm text-muted-foreground">
+          Auto-refresh enabled • Last: {new Date().toLocaleTimeString()}
         </div>
       </div>
 
-      {children}
+      <div key={refreshTrigger}>{children}</div>
     </div>
   );
 }

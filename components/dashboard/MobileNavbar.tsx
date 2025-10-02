@@ -62,6 +62,7 @@ export default function MobileNavbar() {
             <div className="flex h-full flex-col gap-2">
               <div className="flex h-14 items-center border-b px-4">
                 <span className="text-xl font-semibold">QWIKKIE</span>
+                {/* 
                 <Button
                   variant="ghost"
                   size="icon"
@@ -70,6 +71,7 @@ export default function MobileNavbar() {
                 >
                   <X className="h-5 w-5" />
                 </Button>
+                */}
               </div>
               <nav className="grid items-start px-2 text-sm font-medium py-4">
                 {menuItems.map((item) => {
